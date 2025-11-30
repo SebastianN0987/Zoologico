@@ -1,38 +1,38 @@
 # --------------------------------------------------------
-# STAGE 1: build (IMAGEN DE CONSTRUCCIÓN)
-# Usamos el SDK de .NET 8.0 para compilar la aplicación.
+# STAGE 1: build (IMAGEN DE CONSTRUCCIÃ“N)
+# Usamos el SDK de .NET 8.0 para compilar la aplicaciÃ³n.
 # --------------------------------------------------------
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 # Establece el directorio de trabajo dentro del contenedor
 WORKDIR /src
 
-# La siguiente sección es CRUCIAL para soluciones multi-proyecto.
-# El contexto de construcción es la carpeta Zoologico.Modelos-master/
+# La siguiente secciÃ³n es CRUCIAL para soluciones multi-proyecto.
+# El contexto de construcciÃ³n es la carpeta Zoologico.Modelos-master/
 
-# 1. Copiar el archivo de solución (.sln). Este archivo está en la raíz del contexto (Zoologico.Modelos-master).
-#    Asegúrate de que este nombre sea exacto: Zoologico.Modelos.sln
+# 1. Copiar el archivo de soluciÃ³n (.sln). Este archivo estÃ¡ en la raÃ­z del contexto (Zoologico.Modelos-master).
+#    AsegÃºrate de que este nombre sea exacto: Zoologico.Modelos.sln
 COPY ["Zoologico.Modelos-master/Zoologico.Modelos.sln", "."]
 
 # 2. Copiar los archivos de proyecto (.csproj) ANTES de restaurar.
-#    Las rutas son relativas a la raíz del repositorio.
+#    Las rutas son relativas a la raÃ­z del repositorio.
 COPY ["Zoologico.Modelos-master/Zoologico.API/Zoologico.API.csproj", "Zoologico.API/"]
 COPY ["Zoologico.Modelos-master/Zoologico.Modelos/Zoologico.Modelos.csproj", "Zoologico.Modelos/"]
 COPY ["Zoologico.Modelos-master/Zoologico.APITest/Zoologico.APITest.csproj", "Zoologico.APITest/"]
 
-# 3. Restaurar TODA la solución usando el archivo .sln
+# 3. Restaurar TODA la soluciÃ³n usando el archivo .sln
 RUN dotnet restore "Zoologico.Modelos.sln"
 
-# 4. Copiar el resto del código (los archivos .cs, etc.)
+# 4. Copiar el resto del cÃ³digo (los archivos .cs, etc.)
 COPY . .
 
-# 5. Publicar la aplicación
-#    Nos movemos al directorio del proyecto ejecutable para la publicación.
+# 5. Publicar la aplicaciÃ³n
+#    Nos movemos al directorio del proyecto ejecutable para la publicaciÃ³n.
 WORKDIR /src/Zoologico.Models-master/Zoologico.API
 RUN dotnet publish "Zoologico.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # --------------------------------------------------------
-# STAGE 2: final (IMAGEN DE EJECUCIÓN)
-# Usamos una imagen de ASP.NET mucho más ligera para el servidor.
+# STAGE 2: final (IMAGEN DE EJECUCIÃ“N)
+# Usamos una imagen de ASP.NET mucho mÃ¡s ligera para el servidor.
 # --------------------------------------------------------
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
@@ -40,8 +40,8 @@ EXPOSE 8080
 # Configura la variable de entorno para que ASP.NET escuche en el puerto 8080 del contenedor (necesario para Render)
 ENV ASPNETCORE_URLS=http://+:8080
 
-# Copia los archivos publicados desde la etapa de construcción
+# Copia los archivos publicados desde la etapa de construcciÃ³n
 COPY --from=build /app/publish .
 
-# Define el punto de entrada de la aplicación
+# Define el punto de entrada de la aplicaciÃ³n
 ENTRYPOINT ["dotnet", "Zoologico.API.dll"]
