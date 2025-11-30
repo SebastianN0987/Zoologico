@@ -14,7 +14,8 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # Copiar el archivo .csproj (ajustar nombre del archivo según corresponda)
-COPY ["Zoologico.API/Zoologico.API.csproj", "./"]
+COPY ["Zoologico.Modelos-master/Zoologico.API/Zoologico.API.csproj", "Zoologico.API/"]
+
 
 RUN dotnet restore "Zoologico.API.csproj"
 
