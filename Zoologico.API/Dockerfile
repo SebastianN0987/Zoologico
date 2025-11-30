@@ -7,13 +7,14 @@ WORKDIR /src
 
 # La carpeta de GitHub es Zoologico.Modelos-master/, la usamos como base para copiar.
 
-# 1. Copiar el archivo de solución (.sln) para que 'dotnet restore' funcione en soluciones multi-proyecto.
+# 1. Copiar el archivo de solución (.sln)
 COPY ["Zoologico.Modelos-master/Zoologico.Modelos.sln", "."]
 
-# 2. Copiar los archivos de proyecto (.csproj) antes de restaurar.
+# 2. Copiar los archivos de proyecto (.csproj)
 COPY ["Zoologico.Modelos-master/Zoologico.API/Zoologico.API.csproj", "Zoologico.API/"]
 COPY ["Zoologico.Modelos-master/Zoologico.Modelos/Zoologico.Modelos.csproj", "Zoologico.Modelos/"]
 COPY ["Zoologico.Modelos-master/Zoologico.APITest/Zoologico.APITest.csproj", "Zoologico.APITest/"]
+
 
 # 3. Restaurar TODA la solución usando el archivo .sln
 RUN dotnet restore "Zoologico.Modelos.sln"
